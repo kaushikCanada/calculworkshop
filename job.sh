@@ -4,7 +4,7 @@
 #SBATCH --tasks-per-node=1
 #SBATCH --cpus-per-task=2
 #SBATCH --mem=8G
-#SBATCH --time=0-5:00:00
+#SBATCH --time=0-01:00:00
 #SBATCH --output=log.out
 #SBATCH --account=def-sh1352
 #SBATCH --mail-type=BEGIN,FAIL,END
