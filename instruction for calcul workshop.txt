@@ -1,0 +1,28 @@
+1. register an account with Compute Canada by going to https://ccdb.alliancecan.ca/account_application
+2. create an ssh key to store your credentials. use this guide https://docs.alliancecan.ca/wiki/SSH_Keys
+3. upload your public key ONLY to both github and compute canada.
+4. use mobaxterm or vscode and the ssh key to login into the LOGIN node. remember this is not compute node.
+5. Once you get the unix shell you can get yourself comfortable with it and do a sanity check the first time. 
+for example run some basic commands like pwd and whoam i to know where you are and who you are.
+run hostname command to know which host you are logged in as. and finally to check internet connection do ping google.com -c 3.
+8. before running anything go into the scratch folder available in your home directory which is at /home/<username>
+7. its time to run a hello world program. create a directory with mkdir command. ex mkdir ./tmp and then cd tmp.
+8. the main job submission script is a simple shell script. create a shell scipt name hellojob.sh. inside write the following.
+#!/bin/bash
+#SBATCH --time=00:15:00
+#SBATCH --account=def-<yoursuperuser>
+echo 'Hello World!'
+sleep 30
+9. submit the job to the cluster with the sbatch command - sbatch hellojob.sh
+10. use sq command to check the job you have submitted. very soon it should execute and produce a log file called slurm-<jobid>.out as the console output.
+11. now request 1 node and 1 gpu and run any model on CIFAR10 data. remember, the compute codes do not have access to the data so download it beforehand.
+12. at this point you can use Filezilla to transfer your data to the cluster storage scratch directory. the data will be purged after 60 days.
+13. Also if you have create code in github at this point just clone the directory here using git clone https://github.com/kaushikCanada/calculworkshop.git and cd into it.
+14. Here you should try and bruch up some basic git skills like checkout push pull etc. 
+14. once the code and data is there, just create the job.sh file as per the given example. create a python file to train on your data and save a model checkpoint.
+15. ALWAYS checkpoint your model, or you might lose the information and not be able to resume. 
+16. Monitor your training and scale by using distributed pytorch or pytorch-lightning. use tensorboard to see loss curve.
+17. use scancel <jobid> to cancel job. ex. scancel -u karoy84 wil lcancel all jobs in my username.
+18. Export model and do inference on laptop.
+19. Use the platform responsibly. DO NOT over request if you do not need.
+20. Send email to kaushik.roy@inrs.ca in case of any issues.
