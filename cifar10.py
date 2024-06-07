@@ -24,7 +24,7 @@ def main():
 
     transform_train = transforms.Compose([transforms.ToTensor(),transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
 
-    dataset_train = CIFAR10(root='~/scratch/calculworkshop/data', train=True, download=False, transform=transform_train)
+    dataset_train = CIFAR10(root='~/scratch/tmp/data', train=True, download=False, transform=transform_train)
 
     train_loader = DataLoader(dataset_train, batch_size=args.batch_size, num_workers=args.num_workers)
     
