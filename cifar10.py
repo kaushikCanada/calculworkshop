@@ -13,9 +13,10 @@ from torch.utils.data import DataLoader
 
 import argparse
 
-parser = argparse.ArgumentParser(description='cifar10 classification models, single gpu performance test')
+parser = argparse.ArgumentParser(description='cifar10 classification models, gpu test')
 parser.add_argument('--lr', default=0.1, help='')
-parser.add_argument('--batch_size', type=int, default=512, help='')
+parser.add_argument('--max_epochs', type=int, default=4, help='')
+parser.add_argument('--batch_size', type=int, default=768, help='')
 parser.add_argument('--num_workers', type=int, default=0, help='')
 
 
@@ -51,7 +52,7 @@ def main():
 
     transform_train = transforms.Compose([transforms.ToTensor(),transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
 
-    dataset_train = CIFAR10(root='./data', train=True, download=False, transform=transform_train)
+    dataset_train = CIFAR10(root='~/scratch/calculworkshop/data', train=True, download=False, transform=transform_train)
 
     train_loader = DataLoader(dataset_train, batch_size=args.batch_size, num_workers=args.num_workers)
 
