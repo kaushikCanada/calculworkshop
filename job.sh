@@ -5,7 +5,7 @@
 #SBATCH --cpus-per-task=2
 #SBATCH --mem=8G
 #SBATCH --time=0-01:00:00
-#SBATCH --output=log.out
+#SBATCH --output=log-%j.out
 #SBATCH --account=def-sh1352
 #SBATCH --mail-type=BEGIN,FAIL,END
 #SBATCH --mail-user=kaushik.roy@inrs.ca
