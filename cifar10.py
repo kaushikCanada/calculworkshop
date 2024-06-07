@@ -79,6 +79,9 @@ def main():
        perf.append(images_per_sec)
 
     total_time = time.time() - total_start
+    print(total_time)
+
+
 
     # class Net(pl.LightningModule):
 
