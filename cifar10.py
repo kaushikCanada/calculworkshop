@@ -55,6 +55,7 @@ def main():
         train_transforms=train_transforms,
         test_transforms=test_transforms,
         val_transforms=test_transforms,
+        download=False,
     )
 
     # transform_train = transforms.Compose([transforms.ToTensor(),transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
