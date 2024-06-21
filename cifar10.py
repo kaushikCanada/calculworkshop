@@ -4,12 +4,22 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
+import argparse
 import pytorch_lightning as pl
 import torchvision
 import torchvision.transforms as transforms
 from torchvision.datasets import CIFAR10
+from pl_bolts.datamodules import CIFAR10DataModule
+from pl_bolts.transforms.dataset_normalizations import cifar10_normalization
+from pytorch_lightning import LightningModule, Trainer, seed_everything
+from pytorch_lightning.callbacks import LearningRateMonitor
+from pytorch_lightning.callbacks.progress import TQDMProgressBar
+from pytorch_lightning.loggers import CSVLogger
+from torch.optim.lr_scheduler import OneCycleLR
+from torch.optim.swa_utils import AveragedModel, update_bn
 from torch.utils.data import DataLoader
-import argparse
+from torchmetrics.functional import accuracy
+
 
 parser = argparse.ArgumentParser(description='cifar10 classification models, gpu test')
 parser.add_argument('--lr', default=0.001, help='')
@@ -22,11 +32,36 @@ def main():
 
     args = parser.parse_args()
 
-    transform_train = transforms.Compose([transforms.ToTensor(),transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
+    train_transforms = torchvision.transforms.Compose(
+        [
+            torchvision.transforms.RandomCrop(32, padding=4),
+            torchvision.transforms.RandomHorizontalFlip(),
+            torchvision.transforms.ToTensor(),
+            cifar10_normalization(),
+        ]
+    )
+    
+    test_transforms = torchvision.transforms.Compose(
+        [
+            torchvision.transforms.ToTensor(),
+            cifar10_normalization(),
+        ]
+    )
+    
+    cifar10_dm = CIFAR10DataModule(
+        data_dir='~/scratch/tmp/data',
+        batch_size=args.batch_size,
+        num_workers=args.num_workers,
+        train_transforms=train_transforms,
+        test_transforms=test_transforms,
+        val_transforms=test_transforms,
+    )
 
-    dataset_train = CIFAR10(root='~/scratch/tmp/data', train=True, download=False, transform=transform_train)
+    # transform_train = transforms.Compose([transforms.ToTensor(),transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
 
-    train_loader = DataLoader(dataset_train, batch_size=args.batch_size, num_workers=args.num_workers)
+    # dataset_train = CIFAR10(root='~/scratch/tmp/data', train=True, download=False, transform=transform_train)
+
+    # train_loader = DataLoader(dataset_train, batch_size=args.batch_size, num_workers=args.num_workers)
     
     # class Net(nn.Module):
 
@@ -118,7 +153,8 @@ def main():
                         strategy = "ddp", enable_progress_bar=False,
                         )
     net = Net()
-    trainer.fit(net,train_loader)
+    trainer.fit(net,datamodule=cifar10_dm)
+    # trainer.test(model, datamodule=cifar10_dm)
 
 if __name__=='__main__':
    main()
