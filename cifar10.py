@@ -9,8 +9,6 @@ import pytorch_lightning as pl
 import torchvision
 import torchvision.transforms as transforms
 from torchvision.datasets import CIFAR10
-from pl_bolts.datamodules import CIFAR10DataModule
-from pl_bolts.transforms.dataset_normalizations import cifar10_normalization
 from pytorch_lightning import seed_everything
 from torch.utils.data import DataLoader
 from torchmetrics.functional import accuracy
@@ -27,33 +25,18 @@ def main():
 
     args = parser.parse_args()
 
-    train_transforms = torchvision.transforms.Compose(
-        [
-            torchvision.transforms.RandomCrop(32, padding=4),
-            torchvision.transforms.RandomHorizontalFlip(),
-            torchvision.transforms.ToTensor(),
-            cifar10_normalization(),
-        ]
-    )
-    
-    test_transforms = torchvision.transforms.Compose(
-        [
-            torchvision.transforms.ToTensor(),
-            cifar10_normalization(),
-        ]
-    )
-    
-    cifar10_dm = CIFAR10DataModule(
-        data_dir='~/scratch/tmp/data',
-        batch_size=args.batch_size,
-        num_workers=args.num_workers,
-        train_transforms=train_transforms,
-        test_transforms=test_transforms,
-        val_transforms=test_transforms,
-        download=False,
-    )
+    transform_train = transforms.Compose([transforms.ToTensor(),transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
+    trainset = torchvision.datasets.CIFAR10(root='~/scratch/tmp/data', train=True,
+                                        download=False, transform=transform)
 
-    # transform_train = transforms.Compose([transforms.ToTensor(),transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
+    trainloader = torch.utils.data.DataLoader(trainset, 
+                                              shuffle=True, batch_size=args.batch_size, num_workers=args.num_workers)
+    
+    valset = torchvision.datasets.CIFAR10(root='~/scratch/tmp/data', train=False,
+                                          download=False, transform=transform)
+    
+    valloader = torch.utils.data.DataLoader(valset,
+                                            shuffle=False, batch_size=args.batch_size, num_workers=args.num_workers)
 
     # dataset_train = CIFAR10(root='~/scratch/tmp/data', train=True, download=False, transform=transform_train)
 
@@ -149,8 +132,7 @@ def main():
                         strategy = "ddp", enable_progress_bar=False,
                         )
     net = Net()
-    trainer.fit(net,datamodule=cifar10_dm)
-    # trainer.test(model, datamodule=cifar10_dm)
+    trainer.fit(net,trainloader,valloader)
 
 if __name__=='__main__':
    main()
