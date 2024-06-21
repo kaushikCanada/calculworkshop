@@ -124,7 +124,7 @@ def main():
             loss = F.cross_entropy(y_hat, y)
             return loss
 
-        def validaiton_step(self, batch, batch_idx):
+        def validation_step(self, batch, batch_idx):
             x, y = batch
             y_hat = self(x)
             loss = F.cross_entropy(y_hat, y)
