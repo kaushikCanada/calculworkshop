@@ -27,13 +27,13 @@ def main():
 
     transform_train = transforms.Compose([transforms.ToTensor(),transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
     trainset = torchvision.datasets.CIFAR10(root='~/scratch/tmp/data', train=True,
-                                        download=False, transform=transform)
+                                        download=False, transform=transform_train)
 
     trainloader = torch.utils.data.DataLoader(trainset, 
                                               shuffle=True, batch_size=args.batch_size, num_workers=args.num_workers)
     
     valset = torchvision.datasets.CIFAR10(root='~/scratch/tmp/data', train=False,
-                                          download=False, transform=transform)
+                                          download=False, transform=transform_train)
     
     valloader = torch.utils.data.DataLoader(valset,
                                             shuffle=False, batch_size=args.batch_size, num_workers=args.num_workers)
