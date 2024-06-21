@@ -11,12 +11,7 @@ import torchvision.transforms as transforms
 from torchvision.datasets import CIFAR10
 from pl_bolts.datamodules import CIFAR10DataModule
 from pl_bolts.transforms.dataset_normalizations import cifar10_normalization
-from pytorch_lightning import LightningModule, Trainer, seed_everything
-from pytorch_lightning.callbacks import LearningRateMonitor
-from pytorch_lightning.callbacks.progress import TQDMProgressBar
-from pytorch_lightning.loggers import CSVLogger
-from torch.optim.lr_scheduler import OneCycleLR
-from torch.optim.swa_utils import AveragedModel, update_bn
+from pytorch_lightning import seed_everything
 from torch.utils.data import DataLoader
 from torchmetrics.functional import accuracy
 
